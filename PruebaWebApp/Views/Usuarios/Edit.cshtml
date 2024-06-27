@@ -1,0 +1,93 @@
+﻿@model PruebaWebApp.Models.Usuario
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Usuario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Apellido" class="control-label"></label>
+                <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cedula" class="control-label"></label>
+                <input asp-for="Cedula" class="form-control" />
+                <span asp-validation-for="Cedula" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoriaId" class="control-label"></label>
+                <select asp-for="CategoriaId" class="form-control" asp-items="ViewBag.CategoriaId"></select>
+                <span asp-validation-for="CategoriaId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <h4>Proyectos Asignados</h4>
+    <div class="card-deck">
+        @foreach (var usuarioProyecto in Model.UsuarioProyectos)
+        {
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">@usuarioProyecto.Proyecto.Nombre</h5>
+                    <h6 class="card-subtitle">@usuarioProyecto.Proyecto.Descripcion</h6>
+                    <form asp-action="DesasignarProyecto" method="post" class="mt-2">
+                        <input type="hidden" name="usuarioId" value="@Model.Id" />
+                        <input type="hidden" name="proyectoId" value="@usuarioProyecto.IdProyecto" />
+                        <button type="submit" class="btn btn-danger">Desasignar Proyecto</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div>
+    <form asp-action="AsignarProyecto">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <input type="hidden" name="usuarioId" value="@Model.Id" />
+            <label for="proyectoId" class="control-label">Asignar Proyecto</label>
+            <select id="proyectoId" name="proyectoId" class="form-control" asp-items="ViewBag.Proyectos"></select>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Asignar Proyecto" class="btn btn-success" />
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#proyectoId').select2({
+                placeholder: "Seleccione un proyecto",
+                allowClear: true
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

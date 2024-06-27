@@ -1,0 +1,74 @@
+﻿@model PruebaWebApp.Models.Usuario
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Usuario</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Apellido)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Apellido)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cedula)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cedula)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Categoria)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Categoria.Nombre)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Oficina)
+        </dt>
+        @if (Model.Oficina != null)
+        {
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Oficina.Direccion) 
+        </dd>
+        }
+        else
+        {
+            <dd class="col-sm-10">
+                -
+            </dd>
+        }
+    </dl>
+</div>
+
+<div>
+    <h4>Proyectos</h4>
+    <div class="card-deck">
+        @foreach (var proyecto in Model.UsuarioProyectos.Select(up => up.Proyecto))
+        {
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">@proyecto.Nombre</h5>
+                    <h6 class="card-title">@proyecto.Descripcion</h6>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
