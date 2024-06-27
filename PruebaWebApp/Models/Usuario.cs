@@ -18,7 +18,7 @@ namespace PruebaWebApp.Models
         public string Cedula { get; set; }
 
         [Display(Name = "Categoría")]
-        [Required(ErrorMessage = "La categoría es necesaria")]
+        [Required(ErrorMessage = "La categoría es requerida")]
         [ForeignKey("Categorias")]
         public int CategoriaId { get; set; }
         public Categoria? Categoria { get; set; }
