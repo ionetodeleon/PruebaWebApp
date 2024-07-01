@@ -34,7 +34,10 @@ namespace PruebaWebApp.Controllers
             }
 
             var proyecto = await _context.Proyectos
+                .Include(up => up.UsuarioProyectos)
+                .ThenInclude(p => p.Usuario)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (proyecto == null)
             {
                 return NotFound();

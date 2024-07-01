@@ -34,7 +34,9 @@ namespace PruebaWebApp.Controllers
             }
 
             var categoria = await _context.Categorias
+                .Include(c => c.Usuarios)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (categoria == null)
             {
                 return NotFound();

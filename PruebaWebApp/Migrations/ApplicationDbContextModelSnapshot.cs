@@ -41,6 +41,20 @@ namespace PruebaWebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categorias");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descripcion = "Categoria normal",
+                            Nombre = "Estandar"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descripcion = "Categoria premium",
+                            Nombre = "Premium"
+                        });
                 });
 
             modelBuilder.Entity("PruebaWebApp.Models.Oficina", b =>
@@ -69,6 +83,21 @@ namespace PruebaWebApp.Migrations
                         .HasFilter("[UsuarioId] IS NOT NULL");
 
                     b.ToTable("Oficinas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Direccion = "Calle 123",
+                            Nombre = "Oficina 1",
+                            UsuarioId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Direccion = "Avenida 456",
+                            Nombre = "Oficina 2"
+                        });
                 });
 
             modelBuilder.Entity("PruebaWebApp.Models.Proyecto", b =>
@@ -90,6 +119,20 @@ namespace PruebaWebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Proyectos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descripcion = "Descripción del Proyecto 1",
+                            Nombre = "Proyecto 1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descripcion = "Descripción del Proyecto 2",
+                            Nombre = "Proyecto 2"
+                        });
                 });
 
             modelBuilder.Entity("PruebaWebApp.Models.Usuario", b =>
@@ -120,6 +163,24 @@ namespace PruebaWebApp.Migrations
                     b.HasIndex("CategoriaId");
 
                     b.ToTable("Usuarios");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Apellido = "Perez",
+                            CategoriaId = 1,
+                            Cedula = "12345678",
+                            Nombre = "Juan"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Apellido = "Gomez",
+                            CategoriaId = 2,
+                            Cedula = "87654321",
+                            Nombre = "Maria"
+                        });
                 });
 
             modelBuilder.Entity("PruebaWebApp.Models.UsuarioProyecto", b =>
@@ -135,6 +196,23 @@ namespace PruebaWebApp.Migrations
                     b.HasIndex("IdProyecto");
 
                     b.ToTable("UsuarioProyectos");
+
+                    b.HasData(
+                        new
+                        {
+                            IdUsuario = 1,
+                            IdProyecto = 1
+                        },
+                        new
+                        {
+                            IdUsuario = 1,
+                            IdProyecto = 2
+                        },
+                        new
+                        {
+                            IdUsuario = 2,
+                            IdProyecto = 1
+                        });
                 });
 
             modelBuilder.Entity("PruebaWebApp.Models.Oficina", b =>

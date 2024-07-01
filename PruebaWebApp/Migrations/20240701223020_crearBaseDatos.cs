@@ -2,10 +2,12 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace PruebaWebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class crearBaseDeDatos : Migration
+    public partial class crearBaseDatos : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,21 +24,6 @@ namespace PruebaWebApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categorias", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DetalleUsuarios",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Puesto = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Sueldo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DetalleUsuarios", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,8 +49,7 @@ namespace PruebaWebApp.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Apellido = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Cedula = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CategoriaId = table.Column<int>(type: "int", nullable: false),
-                    DetalleUsuarioId = table.Column<int>(type: "int", nullable: false)
+                    CategoriaId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,12 +60,26 @@ namespace PruebaWebApp.Migrations
                         principalTable: "Categorias",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Oficinas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Oficinas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Usuarios_DetalleUsuarios_DetalleUsuarioId",
-                        column: x => x.DetalleUsuarioId,
-                        principalTable: "DetalleUsuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Oficinas_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -106,6 +106,22 @@ namespace PruebaWebApp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Categorias",
+                columns: new[] { "Id", "Descripcion", "Nombre" },
+                values: new object[,]
+                {
+                    { 1, "Categoria normal", "Estandar" },
+                    { 2, "Categoria premium", "Premium" }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Oficinas_UsuarioId",
+                table: "Oficinas",
+                column: "UsuarioId",
+                unique: true,
+                filter: "[UsuarioId] IS NOT NULL");
+
             migrationBuilder.CreateIndex(
                 name: "IX_UsuarioProyectos_IdProyecto",
                 table: "UsuarioProyectos",
@@ -115,17 +131,14 @@ namespace PruebaWebApp.Migrations
                 name: "IX_Usuarios_CategoriaId",
                 table: "Usuarios",
                 column: "CategoriaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Usuarios_DetalleUsuarioId",
-                table: "Usuarios",
-                column: "DetalleUsuarioId",
-                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Oficinas");
+
             migrationBuilder.DropTable(
                 name: "UsuarioProyectos");
 
@@ -137,9 +150,6 @@ namespace PruebaWebApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categorias");
-
-            migrationBuilder.DropTable(
-                name: "DetalleUsuarios");
         }
     }
 }

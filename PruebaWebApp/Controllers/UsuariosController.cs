@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PruebaWebApp.Datos;
 using PruebaWebApp.Models;
@@ -53,7 +54,7 @@ namespace PruebaWebApp.Controllers
         // GET: Usuarios/Create
         public IActionResult Create()
         {
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre");
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre");
             return View();
         }
 
@@ -70,7 +71,7 @@ namespace PruebaWebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", usuario.CategoriaId);
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", usuario.CategoriaId);
             return View();
         }
 
@@ -93,7 +94,7 @@ namespace PruebaWebApp.Controllers
                 return NotFound();
             }
 
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", usuario.CategoriaId);
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", usuario.CategoriaId);
             ViewBag.Proyectos = new SelectList(_context.Proyectos, "Id", "Nombre");
             return View(usuario);
         }
@@ -129,7 +130,7 @@ namespace PruebaWebApp.Controllers
                 return RedirectToAction(nameof(Edit), new { id = usuario.Id });
             }
 
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", usuario.CategoriaId);
+            ViewBag.Categorias = new SelectList(_context.Categorias, "Id", "Nombre", usuario.CategoriaId);
             ViewBag.Proyectos = new SelectList(_context.Proyectos, "Id", "Nombre");
             return View(usuario);
         }
@@ -147,10 +148,16 @@ namespace PruebaWebApp.Controllers
                     IdUsuario = usuarioId,
                     IdProyecto = proyectoId
                 };
-                _context.UsuarioProyectos.Add(usuarioProyecto);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.UsuarioProyectos.Add(usuarioProyecto);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "El proyecto ya se encuentra asignado al usuario.";
+                }
             }
-
             return RedirectToAction(nameof(Edit), new { id = usuarioId });
         }
 

@@ -48,7 +48,7 @@ namespace PruebaWebApp.Controllers
         // GET: Oficinas/Create
         public IActionResult Create()
         {
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Apellido");
+            ViewBag.Usuarios = new SelectList(_context.Usuarios, "Id", "Nombre");
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace PruebaWebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Apellido", oficina.UsuarioId);
+            ViewBag.Usuarios = new SelectList(_context.Usuarios, "Id", "Apellido", oficina.UsuarioId);
             return View(oficina);
         }
 
@@ -82,7 +82,7 @@ namespace PruebaWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Apellido", oficina.UsuarioId);
+            ViewBag.Usuarios = new SelectList(_context.Usuarios, "Id", "Apellido", oficina.UsuarioId);
             return View(oficina);
         }
 
@@ -118,7 +118,7 @@ namespace PruebaWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Apellido", oficina.UsuarioId);
+            ViewBag.Usuarios = new SelectList(_context.Usuarios, "Id", "Apellido", oficina.UsuarioId);
             return View(oficina);
         }
 

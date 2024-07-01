@@ -12,8 +12,8 @@ using PruebaWebApp.Datos;
 namespace PruebaWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240617232933_nullId")]
-    partial class nullId
+    [Migration("20240701223020_crearBaseDatos")]
+    partial class crearBaseDatos
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,9 +44,23 @@ namespace PruebaWebApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categorias");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descripcion = "Categoria normal",
+                            Nombre = "Estandar"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descripcion = "Categoria premium",
+                            Nombre = "Premium"
+                        });
                 });
 
-            modelBuilder.Entity("PruebaWebApp.Models.DetalleUsuario", b =>
+            modelBuilder.Entity("PruebaWebApp.Models.Oficina", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,11 +68,11 @@ namespace PruebaWebApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Puesto")
+                    b.Property<string>("Direccion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Sueldo")
+                    b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -67,7 +81,11 @@ namespace PruebaWebApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DetalleUsuarios");
+                    b.HasIndex("UsuarioId")
+                        .IsUnique()
+                        .HasFilter("[UsuarioId] IS NOT NULL");
+
+                    b.ToTable("Oficinas");
                 });
 
             modelBuilder.Entity("PruebaWebApp.Models.Proyecto", b =>
@@ -110,9 +128,6 @@ namespace PruebaWebApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("DetalleUsuarioId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -120,10 +135,6 @@ namespace PruebaWebApp.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoriaId");
-
-                    b.HasIndex("DetalleUsuarioId")
-                        .IsUnique()
-                        .HasFilter("[DetalleUsuarioId] IS NOT NULL");
 
                     b.ToTable("Usuarios");
                 });
@@ -143,6 +154,15 @@ namespace PruebaWebApp.Migrations
                     b.ToTable("UsuarioProyectos");
                 });
 
+            modelBuilder.Entity("PruebaWebApp.Models.Oficina", b =>
+                {
+                    b.HasOne("PruebaWebApp.Models.Usuario", "Usuario")
+                        .WithOne("Oficina")
+                        .HasForeignKey("PruebaWebApp.Models.Oficina", "UsuarioId");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("PruebaWebApp.Models.Usuario", b =>
                 {
                     b.HasOne("PruebaWebApp.Models.Categoria", "Categoria")
@@ -151,13 +171,7 @@ namespace PruebaWebApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PruebaWebApp.Models.DetalleUsuario", "DetalleUsuario")
-                        .WithOne("Usuario")
-                        .HasForeignKey("PruebaWebApp.Models.Usuario", "DetalleUsuarioId");
-
                     b.Navigation("Categoria");
-
-                    b.Navigation("DetalleUsuario");
                 });
 
             modelBuilder.Entity("PruebaWebApp.Models.UsuarioProyecto", b =>
@@ -184,11 +198,6 @@ namespace PruebaWebApp.Migrations
                     b.Navigation("Usuarios");
                 });
 
-            modelBuilder.Entity("PruebaWebApp.Models.DetalleUsuario", b =>
-                {
-                    b.Navigation("Usuario");
-                });
-
             modelBuilder.Entity("PruebaWebApp.Models.Proyecto", b =>
                 {
                     b.Navigation("UsuarioProyectos");
@@ -196,6 +205,8 @@ namespace PruebaWebApp.Migrations
 
             modelBuilder.Entity("PruebaWebApp.Models.Usuario", b =>
                 {
+                    b.Navigation("Oficina");
+
                     b.Navigation("UsuarioProyectos");
                 });
 #pragma warning restore 612, 618
